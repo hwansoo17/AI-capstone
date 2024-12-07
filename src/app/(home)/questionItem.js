@@ -8,7 +8,6 @@ const QuestionItem = ({ text }) => {
 
   const handleTypecastTTS = async () => {
     setAudioLoading(true);
-
     try {
       const response = await axios.post("/api/tts", { text });
       setAudioUrl(response.data.audioUrl);
