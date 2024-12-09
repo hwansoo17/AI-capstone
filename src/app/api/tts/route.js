@@ -13,7 +13,7 @@ export async function POST(req) {
     }
 
     const data = {
-      actor_id: "653220349ba8419521ae8a63",
+      actor_id: "65bb3a1976b69213594357fc",
       text: `__${text.substr(2)}`,
       lang: "auto",
       tempo: 1,
@@ -23,7 +23,7 @@ export async function POST(req) {
       max_seconds: 60,
       model_version: "latest",
       xapi_audio_format: "mp3",
-      emotion_tone_preset: "normal-2",
+      emotion_tone_preset: "normal-1",
     };
 
     const config = {
