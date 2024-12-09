@@ -8,19 +8,31 @@ const openaiClient = new OpenAI({
 export async function POST(req) {
   try {
     const body = await req.json(); // 요청 본문 파싱
-    const { selfIntroduction, recruitmentDetails, maxQuestions = 3 } = body;
+    const { applyedJob, requiredCompetency, preferentialTreatment, idealTalent, selfIntroduction, category, maxQuestions = 3 } = body;
 
-    if (!selfIntroduction || !recruitmentDetails) {
+    const formattedSelfIntroduction = selfIntroduction
+      .map(
+        (item, index) =>
+          `문항 ${index + 1}: ${item.question}\n문항 ${index + 1} 답변: ${item.answer}\n`
+      )
+      .join("\n");
+    if (!selfIntroduction || !applyedJob) {
       return new Response(
-        JSON.stringify({ error: "자소서와 모집요강이 필요합니다." }),
+        JSON.stringify({ error: "자소서와 지원 직무는 필수로 입력해야합니다." }),
         { status: 400, headers: { "Content-Type": "application/json" } }
       );
     }
-
+    console.log(applyedJob, requiredCompetency, preferentialTreatment, idealTalent, formattedSelfIntroduction, category, maxQuestions);
     const prompt = `
-      자소서: ${selfIntroduction}
-      모집요강: ${recruitmentDetails}
-      위 정보를 기반으로 면접 질문 ${maxQuestions}개를 작성해줘.
+      모집요강: 
+      - 지원 직무:${applyedJob}
+      - 필요 역량:${requiredCompetency}
+      - 우대 사항:${preferentialTreatment}
+      - 인재상:${idealTalent}
+
+      자소서:${formattedSelfIntroduction}
+
+      위 정보를 기반으로 ${category}하는 면접 질문 ${maxQuestions}개를 작성해줘.
       질문 이외의 다른 말은 하지 마.
     `;
 

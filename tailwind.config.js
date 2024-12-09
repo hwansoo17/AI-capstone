@@ -7,6 +7,11 @@ module.exports = {
   ],
   theme: {
     extend: {
+      fontFamily: { // ⬅️ add
+        pretendard: ["var(--font-pretendard)"],
+        GmarketSansMedium: ["var(--font-GmarketSansMedium)"],
+        GmarketSansBold: ["var(--font-GmarketSansBold)"],
+      },
       colors: {
         background: "var(--background)",
         foreground: "var(--foreground)",

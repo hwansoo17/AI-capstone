@@ -1,15 +1,25 @@
 import localFont from "next/font/local";
 import "./globals.css";
+import Navigation from "@/components/navigation";
 
-const geistSans = localFont({
-  src: "./fonts/GeistVF.woff",
-  variable: "--font-geist-sans",
-  weight: "100 900",
+const pretendard = localFont({ // ⬅️ add
+  src: "./fonts/PretendardVariable.woff2",
+  display: "swap",
+  weight: "45 920",
+  variable: "--font-pretendard",
 });
-const geistMono = localFont({
-  src: "./fonts/GeistMonoVF.woff",
-  variable: "--font-geist-mono",
-  weight: "100 900",
+
+const GmarketSansMedium = localFont({ // ⬅️ add
+  src: './fonts/GmarketSansMedium.woff',
+  display: "swap",
+  weight: "45 920",
+  variable: "--font-GmarketSansMedium",
+});
+
+const GmarketSansBold = localFont({ // ⬅️ add
+  src: './fonts/GmarketSansBold.woff',
+  display: "swap",
+  variable: "--font-GmarketSansBold",
 });
 
 export const metadata = {
@@ -19,10 +29,11 @@ export const metadata = {
 
 export default function RootLayout({ children }) {
   return (
-    <html lang="en">
+    <html lang="en" className={`${pretendard.variable} ${GmarketSansMedium.variable} ${GmarketSansBold.variable} bg-white`}>
       <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
+        className="font-pretendard"
       >
+        <Navigation />
         {children}
       </body>
     </html>
