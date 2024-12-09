@@ -10,9 +10,8 @@ export default function QuestionPage() {
   const { questions } = useInterviewStore();
   const router = useRouter();
   const [audioLoading, setAudioLoading] = useState(false);
-  const [audioUrl, setAudioUrl] = useState(null);
-  const [audio, setAudio] = useState(null);
   const [isPlaying, setIsPlaying] = useState(false); // 재생 상태 추가
+  const [audioContext, setAudioContext] = useState(null); // AudioContext 저장
 
   // 질문이 없을 경우 카테고리 선택 페이지로 돌아가기
   if (questions.length === 0) {
@@ -25,35 +24,49 @@ export default function QuestionPage() {
 
     setAudioLoading(true);
     setIsPlaying(true); // 재생 중 상태로 설정
+
     try {
-      // 첫 번째 질문을 TTS로 변환
+      // TTS API 호출
       const response = await axios.post("/api/tts", { text: questions[0] });
       const audioUrl = response.data.audioUrl;
-      setAudioUrl(audioUrl);
 
-      // 오디오 객체 생성 및 이벤트 처리
-      const audioObject = new Audio(audioUrl);
-      setAudio(audioObject);
-      
-      audioObject.load();
+      // Web Audio API 사용
+      const context = audioContext || new (window.AudioContext || window.webkitAudioContext)();
+      setAudioContext(context);
 
-      // 오디오 재생 준비 확인
-      await new Promise((resolve) => {
-        audioObject.addEventListener("canplaythrough", resolve, { once: true });
-      });
+      const responseAudio = await fetch(audioUrl);
+      const audioData = await responseAudio.arrayBuffer();
 
-      // 약간의 지연 추가 (버퍼링 확실히 보장)
-      setTimeout(() => {
-        audioObject.play();
-      }, 300);
+      // 디코딩된 오디오 데이터를 재생
+      // 디코딩된 오디오 데이터를 재생
+const decodedData = await context.decodeAudioData(audioData);
+const source = context.createBufferSource();
+source.buffer = decodedData;
+source.connect(context.destination);
 
-      audioObject.onended = () => {
-        // 재생이 끝나면 다음 페이지로 이동
-        setIsPlaying(false);
-        router.push("/practice/answer");
-      };
+// 짧은 무음 버퍼 생성 (0.1초 정도)
+const silenceBuffer = context.createBuffer(1, context.sampleRate * 1, context.sampleRate);
+const silenceSource = context.createBufferSource();
+silenceSource.buffer = silenceBuffer;
+silenceSource.connect(context.destination);
 
-      audioObject.play();
+// 무음 재생이 끝난 후 실제 오디오 재생
+silenceSource.onended = () => {
+  source.start(context.currentTime);
+};
+
+// AudioContext 활성화
+await context.resume();
+
+// 먼저 무음을 재생
+silenceSource.start(context.currentTime);
+
+// 실제 오디오 재생 완료 후 다음 페이지 이동
+source.onended = () => {
+  setIsPlaying(false);
+  router.push("/practice/answer");
+};
+
     } catch (error) {
       console.error("TTS 생성 중 오류:", error);
       alert("TTS 생성 중 오류가 발생했습니다.");
@@ -77,26 +90,18 @@ export default function QuestionPage() {
         </div>
 
         <div className="flex justify-center mt-20">
-        <button
+          <button
             className={`text-2xl font-semibold rounded-full px-12 py-6 ${
               audioLoading || isPlaying
                 ? "bg-gray-400 text-gray-700 cursor-not-allowed"
                 : "bg-[#0F2F70] text-white hover:bg-[#0D265E]"
             }`}
             onClick={handlePlayTTS}
-            disabled={audioLoading || isPlaying}
+            disabled={audioLoading || isPlaying} // 버튼 비활성화 조건
           >
             {audioLoading ? "음성 생성 중..." : "질문 듣기"}
           </button>
         </div>
-        
-
-        {/* <button
-          className="mt-6 text-white bg-gray-600 hover:bg-gray-700 px-8 py-4 rounded-lg text-lg font-semibold"
-          onClick={() => router.push("/practice/category")}
-        >
-          다시 연습하기
-        </button> */}
       </div>
     </div>
   );
