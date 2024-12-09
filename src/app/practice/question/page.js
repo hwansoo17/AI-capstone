@@ -28,11 +28,16 @@ export default function QuestionPage() {
     try {
       // 첫 번째 질문을 TTS로 변환
       const response = await axios.post("/api/tts", { text: questions[0] });
-      setAudioUrl(response.data.audioUrl);
+      const audioUrl = response.data.audioUrl;
+      setAudioUrl(audioUrl);
 
-      // 오디오 객체 생성 및 재생
-      const audioObject = new Audio(response.data.audioUrl);
-      setAudio(audioObject);
+      // 오디오 객체 생성 및 이벤트 처리
+      const audioObject = new Audio(audioUrl);
+
+      // 오디오 로드 완료 후 재생
+      audioObject.addEventListener("canplaythrough", () => {
+        audioObject.play();
+      });
 
       audioObject.onended = () => {
         // 재생이 끝나면 다음 페이지로 이동
