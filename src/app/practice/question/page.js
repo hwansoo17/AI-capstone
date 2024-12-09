@@ -33,11 +33,19 @@ export default function QuestionPage() {
 
       // 오디오 객체 생성 및 이벤트 처리
       const audioObject = new Audio(audioUrl);
+      setAudio(audioObject);
+      
+      audioObject.load();
 
-      // 오디오 로드 완료 후 재생
-      audioObject.addEventListener("canplaythrough", () => {
-        audioObject.play();
+      // 오디오 재생 준비 확인
+      await new Promise((resolve) => {
+        audioObject.addEventListener("canplaythrough", resolve, { once: true });
       });
+
+      // 약간의 지연 추가 (버퍼링 확실히 보장)
+      setTimeout(() => {
+        audioObject.play();
+      }, 300);
 
       audioObject.onended = () => {
         // 재생이 끝나면 다음 페이지로 이동
