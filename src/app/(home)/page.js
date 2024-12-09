@@ -1,6 +1,12 @@
 import Image from "next/image";
 import Ai from "../../../public/ai.svg";
 import Link from "next/link";
+import fileIcon from "../../../public/icons/file.svg";
+import magnifierIcon from "../../../public/icons/magnifier.svg";
+import cameraIcon from "../../../public/icons/camera.svg";
+import graphIcon from "../../../public/icons/graph.svg";
+import arrowIcon from "../../../public/icons/arrow.svg";
+
 export default function Home() {
   return (
     <div className="w-full bg-[#ECF1FA] h-96 items-center px-5">
@@ -17,6 +23,43 @@ export default function Home() {
         alt="ai"
         width={230}
         />
+      </div>
+      <div className="flex flex-col items-center mt-20">
+        <h1 className="font-bold text-3xl text-gray-800 mt-8">
+          인공지능 ‘아이’가 면접 준비를 도와드릴게요!
+        </h1>
+        <p className="font-medium text-xl text-[#949494] mt-3 text-center">
+          자기소개서 기반 맞춤형 질문으로 면접을 응시하고 분석 결과를 받아보세요
+        </p>
+      </div>
+      <div className="flex gap-8 mt-12 px-32 py-9 max-w-[1220px] mx-auto justify-between">
+        <div className="flex flex-col items-center justify-center gap-4">
+          <Image src={fileIcon} alt="file"/>
+          <div className="font-medium text-2xl text-black">
+            자료 입력
+          </div>
+        </div>
+        <Image src={arrowIcon} alt="arrow"/>
+        <div className="flex flex-col items-center justify-center gap-4">
+          <Image src={magnifierIcon} alt="magnifier"/>
+          <div className="font-medium text-2xl text-black">
+            질문 선택
+          </div>
+        </div>
+        <Image src={arrowIcon} alt="arrow"/>
+        <div className="flex flex-col items-center justify-center gap-4">
+          <Image src={cameraIcon} alt="camera"/>
+          <div className="font-medium text-2xl text-black">
+            면접 응시
+          </div>
+        </div>
+        <Image src={arrowIcon} alt="arrow"/>
+        <div className="flex flex-col items-center justify-center gap-4">
+          <Image src={graphIcon} alt="graph"/>
+          <div className="font-medium text-2xl text-black">
+            결과 확인
+          </div>
+        </div>
       </div>
       
     </div>
