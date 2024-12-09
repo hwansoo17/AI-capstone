@@ -77,7 +77,7 @@ const pollSpeakStatus = async (url) => {
       }
 
       // 1초 대기
-      await new Promise((resolve) => setTimeout(resolve, 1500));
+      await new Promise((resolve) => setTimeout(resolve, 5000));
     }
   } catch (error) {
     console.error("폴링 중 오류:", error);
