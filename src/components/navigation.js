@@ -65,13 +65,13 @@ export default function Navigation() {
               면접 연습
             </Link>
           </li>
-          <li className="flex gap-2 items-center">
+          {/* <li className="flex gap-2 items-center">
             
             <Link href="/tips" className={linkStyle("/tips")}>
               <Image src={lightIcon} alt="light" />
               면접 팁
             </Link>
-          </li>
+          </li> */}
           <li className="flex gap-2 items-center">
             
             <Link href="/community" className={linkStyle("/community")}>

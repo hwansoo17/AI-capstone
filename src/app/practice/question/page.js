@@ -31,7 +31,7 @@ export default function QuestionPage() {
       const audioUrl = response.data.audioUrl;
 
       // Web Audio API 사용
-      const context = audioContext || new (window.AudioContext || window.webkitAudioContext)();
+      const context = audioContext || new window.AudioContext();
       setAudioContext(context);
 
       const responseAudio = await fetch(audioUrl);
@@ -39,34 +39,33 @@ export default function QuestionPage() {
 
       // 디코딩된 오디오 데이터를 재생
       // 디코딩된 오디오 데이터를 재생
-const decodedData = await context.decodeAudioData(audioData);
-const source = context.createBufferSource();
-source.buffer = decodedData;
-source.connect(context.destination);
+      const decodedData = await context.decodeAudioData(audioData);
+      const source = context.createBufferSource();
+      source.buffer = decodedData;
+      source.connect(context.destination);
 
-// 짧은 무음 버퍼 생성 (0.1초 정도)
-const silenceBuffer = context.createBuffer(1, context.sampleRate * 1, context.sampleRate);
-const silenceSource = context.createBufferSource();
-silenceSource.buffer = silenceBuffer;
-silenceSource.connect(context.destination);
+      // 짧은 무음 버퍼 생성 (0.1초 정도)
+      const silenceBuffer = context.createBuffer(1, context.sampleRate * 1, context.sampleRate);
+      const silenceSource = context.createBufferSource();
+      silenceSource.buffer = silenceBuffer;
+      silenceSource.connect(context.destination);
 
-// 무음 재생이 끝난 후 실제 오디오 재생
-silenceSource.onended = () => {
-  source.start(context.currentTime);
-};
+      // 무음 재생이 끝난 후 실제 오디오 재생
+      silenceSource.onended = () => {
+        source.start(context.currentTime);
+      };
 
-// AudioContext 활성화
-await context.resume();
+      // AudioContext 활성화
+      await context.resume();
 
-// 먼저 무음을 재생
-silenceSource.start(context.currentTime);
+      // 먼저 무음을 재생
+      silenceSource.start(context.currentTime);
 
-// 실제 오디오 재생 완료 후 다음 페이지 이동
-source.onended = () => {
-  setIsPlaying(false);
-  router.push("/practice/answer");
-};
-
+      // 실제 오디오 재생 완료 후 다음 페이지 이동
+      source.onended = () => {
+        setIsPlaying(false);
+        router.push("/practice/answer");
+      };
     } catch (error) {
       console.error("TTS 생성 중 오류:", error);
       alert("TTS 생성 중 오류가 발생했습니다.");

@@ -65,43 +65,13 @@ export default function StartPage() {
     router.push("/practice/category"); // 상태는 전역으로 관리되므로 query 없이 이동
   };
 
-  const handleGenerateQuestions = async () => {
-    if (!validateFirstQuestion()) return;
-
-    setLoading(true);
-    setQuestions([]); // 이전 질문 초기화
-
-    try {
-      const response = await fetch("/api/question", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ applyedJob, requiredCompetency, preferentialTreatment, idealTalent, selfIntroduction, maxQuestions: 3 }),
-      });
-
-      if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.error || "Unknown error occurred");
-      }
-
-      const data = await response.json();
-      setQuestions(data.questions);
-    } catch (error) {
-      console.error("Error generating questions:", error);
-      alert("질문 생성 중 오류가 발생했습니다.");
-    } finally {
-      setLoading(false);
-    }
-  };
-
   
   return (
     <div className="w-full items-center bg-[#E5EBF8]">
-      <div className="w-full max-w-[1220px] mx-auto bg-white px-20 py-8">
+      <div className="w-full max-w-[1220px] min-w-[1000px] mx-auto bg-white px-20 py-8">
         <div className="flex flex-col items-center mt-32">
           <Image src={Ai2} alt="Ai2" width={150}/>
-          <p className="font-bold text-[36px] text-[#313131] mt-14">면접 준비에 필요한 자료를 입력해주세요</p>
+          <p className="font-bold text-[36px] text-[#313131] text-center mt-14">면접 준비에 필요한 자료를 입력해주세요</p>
           <p className="font-medium text-2xl text-[#949494] text-center mt-4">
             자기소개서를 기반으로 맞춤형 질문을 생성해드릴게요
           </p>

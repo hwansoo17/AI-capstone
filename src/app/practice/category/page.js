@@ -6,7 +6,7 @@ import sprout from "../../../../public/icons/sprout.svg";
 import target from "../../../../public/icons/target.svg";
 import checkIcon from "../../../../public/icons/check.svg"; // 체크 아이콘 추가
 import useInterviewStore from "@/store/useInterviewStore";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 
  const SelectedItemUI = () => {
@@ -15,7 +15,7 @@ import { useRouter } from "next/navigation";
       <div className="flex justify-center">
         <Image src={checkIcon} alt="check" width={70}/>
       </div>
-      <h2 className="font-bold text-3xl text-gray-800 text-center mt-2">
+      <h2 className="font-bold text-2xl text-gray-800 text-center mt-2">
         선택 완료
       </h2>
       <p className="text-base text-gray-600 mt-2 text-center">
@@ -39,9 +39,16 @@ export default function CategorySelectPage() {
   const [loading, setLoading] = useState(false);
   const [selectedCategory, setSelectedCategory] = useState(null);
 
-  const handleGenerateQuestions = async (category) => {
+  useEffect(() => {
+    if (!applyedJob || !selfIntroduction[0]?.question) {
+      alert("필수 정보를 입력하지 않아 접근할 수 없습니다.");
+      router.push("/practice/start"); // StartPage로 이동
+    }
+  }, [router, applyedJob, selfIntroduction]);
+
+  const handleGenerateQuestions = async ({category, index}) => {
     setLoading(true);
-    setSelectedCategory(category); // 현재 선택된 카테고리 설정
+    setSelectedCategory(index); // 현재 선택된 카테고리 설정
     setQuestions([]); // 이전 질문 초기화
 
     try {
@@ -57,7 +64,7 @@ export default function CategorySelectPage() {
           idealTalent,
           selfIntroduction,
           category,
-          maxQuestions: 3,
+          maxQuestions: 2,
         }),
       });
 
@@ -94,16 +101,16 @@ export default function CategorySelectPage() {
       <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mt-12 px-8 max-w-[1220px]">
         {/* Category 1 */}
         <button
-          className={`bg-[#ECF1FA] p-12 rounded-3xl hover:shadow-lg transition`}
+          className={`bg-[#ECF1FA] p-12 rounded-3xl hover:shadow-lg transition ${loading && selectedCategory !== 1 && "opacity-50 hover:shadow-none"}`}
           onClick={() =>
             handleGenerateQuestions(
-              "경험 및 직무 경험을 바탕으로 직무와의 적합성 및 전문성 평가"
+              {category: "경험 및 직무 경험을 바탕으로 직무와의 적합성 및 전문성 평가", index: 1}
             )
           }
           disabled={loading}
         >
-          {selectedCategory ===
-          "경험 및 직무 경험을 바탕으로 직무와의 적합성 및 전문성 평가" ? (
+          {selectedCategory === 1 ? 
+          (
             <SelectedItemUI />
           ) : (
             <>
@@ -124,16 +131,16 @@ export default function CategorySelectPage() {
 
         {/* Category 2 */}
         <button
-          className={`bg-[#EBFFF7] p-12 rounded-3xl hover:shadow-lg transition`}
+          className={`bg-[#EBFFF7] p-12 rounded-3xl hover:shadow-lg transition ${loading && selectedCategory !== 2 && "opacity-50 hover:shadow-none"}`}
           onClick={() =>
             handleGenerateQuestions(
-              "성격, 대인 관계 능력, 협업 태도 등을 평가하여 조직 적합성 판단"
+              {category: "성격, 대인 관계 능력, 협업 태도 등을 평가하여 조직 적합성 판단", index: 2}
             )
           }
           disabled={loading}
         >
-          {selectedCategory ===
-          "성격, 대인 관계 능력, 협업 태도 등을 평가하여 조직 적합성 판단" ? (
+          {selectedCategory === 2 ? 
+          (
             <SelectedItemUI />
           ) : (
             <>
@@ -154,16 +161,16 @@ export default function CategorySelectPage() {
 
         {/* Category 3 */}
         <button
-          className={`bg-[#F6F6F7] p-12 rounded-3xl hover:shadow-lg transition`}
+          className={`bg-[#F6F6F7] p-12 rounded-3xl hover:shadow-lg transition ${loading && selectedCategory !== 3 && "opacity-50 hover:shadow-none"}`}
           onClick={() =>
             handleGenerateQuestions(
-              "지원 동기와 개인의 목표 및 가치관이 회사와 부합하는지 평가"
+              {category: "지원 동기와 개인의 목표 및 가치관이 회사와 부합하는지 평가", index: 3}
             )
           }
           disabled={loading}
         >
-          {selectedCategory ===
-          "지원 동기와 개인의 목표 및 가치관이 회사와 부합하는지 평가" ? (
+          {selectedCategory === 3 ? 
+          (
             <SelectedItemUI />
           ) : (
             <>

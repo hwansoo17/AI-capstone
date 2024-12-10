@@ -8,7 +8,7 @@ const openaiClient = new OpenAI({
 export async function POST(req) {
   try {
     const body = await req.json(); // 요청 본문 파싱
-    const { applyedJob, requiredCompetency, preferentialTreatment, idealTalent, selfIntroduction, category, maxQuestions = 3 } = body;
+    const { applyedJob, requiredCompetency, preferentialTreatment, idealTalent, selfIntroduction, category, maxQuestions = 2 } = body;
 
     const formattedSelfIntroduction = selfIntroduction
       .map(
@@ -37,7 +37,7 @@ export async function POST(req) {
     `;
 
     const response = await openaiClient.chat.completions.create({
-      model: "gpt-4o-mini",
+      model: "gpt-4o",
       max_tokens: 300, // 토큰 제한
       messages: [
         {"role": "system", "content": "너는 기업 면접관이야."},
@@ -53,7 +53,7 @@ export async function POST(req) {
       .split("\n")
       .filter((line) => line.trim() !== "") // 빈 줄 제거
       .slice(0, maxQuestions); // 최대 질문 개수 제한
-
+    console.log(questions);
     return new Response(JSON.stringify({ questions }), {
       status: 200,
       headers: { "Content-Type": "application/json" },
